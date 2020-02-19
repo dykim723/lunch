@@ -1,5 +1,3 @@
-# lunch
-
 # Lunch
 
 Let's randomly divide people for lunch time.
