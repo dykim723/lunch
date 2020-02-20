@@ -9,14 +9,49 @@ router.get('/', async (req, res, next) => {
   res.json(users);
 });
 
-router.post('/create', async (req, res) => {
+router.post('/', async (req, res) => {
   let name = req.body.name;
+  let query = { name: name };
 
-  const user = new User({ name: name });
+  User.exists(query, function(err, ret) {
+    let user = null;
+    let output = null;
 
-  await user.save().then(() => console.log('User created'));
+    if (err) return res.status(500).json({ error: err });
 
-  res.status(200).json({});
+    if (!ret) {
+      user = new User(query);
+      user.save().then(() => console.log('User created'));
+      output = `Created ${name}`;
+    } else {
+      output = `${name} existed`;
+    }
+
+    res.status(200).json({ output });
+  });
+});
+
+router.delete('/:id', async (req, res) => {
+  let id = req.params.id;
+  // let name = req.body.name;
+
+  console.log(id);
+
+  User.deleteOne({ _id: id }, function(err, output) {
+    if (err) return res.status(500).json({ error: 'DB Failure' });
+
+    console.log(output);
+    if (!output.n) {
+      return res.status(404).json({ error: `${id} is not valid ID` });
+    }
+
+    res.status(204).end();
+  });
+  // const user = new User({ name: name });
+
+  // await user.save().then(() => console.log('User created'));
+
+  // res.status(200).json({ id: id });
 });
 
 module.exports = router;

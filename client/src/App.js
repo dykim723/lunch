@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Add from './components/Add';
+import Delete from './components/Delete';
 import logo from './logo.svg';
 
 import { fetchPeople, getPeople } from './modules/lunch';
@@ -25,16 +27,9 @@ function App() {
   const [users, setUsers] = useState([]);
   // const { people } = this.props;
 
-  // useEffect(() => {
-  //   // API.getData()
-  //   //   .then((response) => { setData(response) });
-  //   // createUser();
-  //   loadUsers();
-  // }, []);
   useEffect(() => {
-    console.log('렌더링이 완료되었습니다!');
-    // loadUsers();
-  });
+    loadUsers();
+  }, []);
 
   const createUser = name => {
     fetch(apiUrl + '/users/create', {
@@ -59,15 +54,23 @@ function App() {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
-        // setUsers([...users, { name: 'ddd' }]);
         setUsers(data);
-        console.log(users);
       });
+  };
 
-    // this.setState({
-    //   users: res.data,
-    // });
+  const People = ({ user }) => {
+    return (
+      <div>
+        {user.map(u => {
+          return (
+            <div className="user" key={u._id}>
+              {u.name}
+              <Delete id={u._id} loadUsers={loadUsers}></Delete>
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   return (
@@ -87,6 +90,12 @@ function App() {
         </a>
         <button onClick={() => createUser('kim')}>Create User</button>
         {users.length}
+        <div>
+          <Add></Add>
+        </div>
+        <div>
+          <People user={users}></People>
+        </div>
       </header>
     </div>
   );
