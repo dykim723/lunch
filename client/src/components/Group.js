@@ -1,43 +1,40 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Person from './Person';
+import Typography from '@material-ui/core/Typography';
 
-const useStyles = makeStyles(theme => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+const useStyles = makeStyles({
+  root: {
+    minWidth: 275,
   },
-}));
+  bullet: {
+    display: 'inline-block',
+    margin: '0 2px',
+    transform: 'scale(0.8)',
+  },
+  title: {
+    fontSize: 14,
+  },
+  pos: {
+    marginBottom: 12,
+  },
+});
 
-export default function GroupedSelect() {
+export default function Group({ people, num }) {
   const classes = useStyles();
 
   return (
-    <div>
-      <FormControl className={classes.formControl}>
-        <InputLabel htmlFor="grouped-select">Grouping</InputLabel>
-        <Select defaultValue="" input={<Input id="grouped-select" />}>
-          <MenuItem value="Minimum">
-            <em>Minimum member size</em>
-          </MenuItem>
-          <ListSubheader>Number of Groups</ListSubheader>
-          <MenuItem value={1}>1</MenuItem>
-          <MenuItem value={2}>2</MenuItem>
-          <MenuItem value={3}>3</MenuItem>
-          <MenuItem value={4}>4</MenuItem>
-          <MenuItem value={5}>5</MenuItem>
-          <MenuItem value={6}>6</MenuItem>
-          <MenuItem value={7}>7</MenuItem>
-          <MenuItem value={8}>8</MenuItem>
-          <MenuItem value={9}>9</MenuItem>
-          <MenuItem value={10}>10</MenuItem>
-        </Select>
-      </FormControl>
-    </div>
+    <Card className={classes.root}>
+      <CardContent>
+        <Typography variant="h5" component="h2">
+          Group {num + 1}
+        </Typography>
+        {people.map(u => {
+          return <Person key={u._id} person={u}></Person>;
+        })}
+      </CardContent>
+    </Card>
   );
 }

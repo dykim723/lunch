@@ -51,16 +51,19 @@ export default function Grouping(props) {
   };
 
   const makeGroups = () => {
-    console.log('makeGruops', number);
+    let groupNo = 0;
+    // console.log('makeGruops', number);
     setNumber('');
 
     shuffle(props.people);
 
     if (type === 'groups_number') {
-      makeNumberOfGroups();
+      groupNo = makeNumberOfGroups();
     } else {
-      makeMinumumMemberSize();
+      groupNo = makeMinimumMemberSize();
     }
+
+    props.handleGroups(groupNo);
   };
 
   const changeGroupNumber = e => {
@@ -96,10 +99,11 @@ export default function Grouping(props) {
     });
 
     console.log(people);
+    return groupNo;
   };
 
-  const makeMinumumMemberSize = () => {
-    console.log('makeMinumumMemberSize', props.people, number);
+  const makeMinimumMemberSize = () => {
+    console.log('makeMinimumMemberSize', props.people, number);
 
     let people = props.people;
     let groupNo = Math.floor(people.length / parseInt(number));
@@ -128,6 +132,7 @@ export default function Grouping(props) {
       }
     });
     console.log(people);
+    return groupNo;
   };
 
   const getGroupingType = e => {

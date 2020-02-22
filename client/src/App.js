@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Add from './components/Add';
-import Delete from './components/Delete';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import Person from './components/Person';
+import Group from './components/Group';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grouping from './components/Grouping';
-
-import logo from './logo.svg';
 
 import { fetchPeople, getPeople } from './modules/lunch';
 
@@ -71,6 +70,7 @@ const useStyles = makeStyles(theme => ({
 function App() {
   const classes = useStyles();
   const [users, setUsers] = useState([]);
+  const [groups, setGroups] = useState([]);
   // const { people } = this.props;
 
   useEffect(() => {
@@ -114,14 +114,40 @@ function App() {
       <div>
         {user.map(u => {
           return (
-            <div className="user" key={u._id}>
-              {u.name}
-              <Delete id={u._id} loadUsers={loadUsers}></Delete>
-            </div>
+            <Person key={u._id} person={u} handleLoadUsers={loadUsers}></Person>
           );
         })}
       </div>
     );
+  };
+
+  // const Groups = (people, groupoNo) => {
+  //   return (
+  //     {
+  //       for (let i = 0; i < groupNo; i++) {
+  //         <Group key={i} people={group}></Group>;
+  //       }
+  //     }
+  //   )
+  // };
+
+  const makeGroups = groupNo => {
+    console.log('makeGroups', users, groupNo);
+    let ret = [];
+    let group;
+
+    for (let i = 0; i < groupNo; i++) {
+      group = users.filter(e => e.group === i);
+      console.log(i, group, groups);
+      ret.push(<Group key={i} people={group} num={i}></Group>);
+      // setGroups([...groups, <Group key={i} people={group}></Group>]);
+    }
+    setGroups(ret);
+
+    // console.log(group);
+
+    // setGroups([...groups, <Group people={users}></Group>]);
+    // Groups(users);
   };
 
   return (
@@ -131,36 +157,25 @@ function App() {
         <AppBar position="absolute" color="default" className={classes.appBar}>
           <Toolbar>
             <Typography variant="h6" color="inherit" noWrap>
-              Company name
+              Lunch
             </Typography>
           </Toolbar>
         </AppBar>
         <main className={classes.layout}>
           <Paper className={classes.paper}>
-            <Typography component="h1" variant="h4" align="center">
-              <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <a
-                  className="App-link"
-                  href="https://reactjs.org"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {/* {people} */}
-                </a>
-                <button onClick={() => createUser('kim')}>Create User</button>
-                {users.length}
-                <div>
-                  <Add loadUsers={loadUsers}></Add>
-                </div>
-                <div>
-                  <People user={users}></People>
-                </div>
-              </header>
-            </Typography>
             <React.Fragment>
-              <Grouping people={users}></Grouping>
+              {/* <button onClick={() => createUser('kim')}>Create User</button>
+              {users.length} */}
+
+              <Add loadUsers={loadUsers}></Add>
+
+              <People user={users}></People>
+
+              <Grouping people={users} handleGroups={makeGroups}></Grouping>
             </React.Fragment>
+          </Paper>
+          <Paper className={classes.paper}>
+            <React.Fragment>{groups}</React.Fragment>
           </Paper>
         </main>
       </React.Fragment>
