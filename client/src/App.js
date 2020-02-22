@@ -100,7 +100,12 @@ function App() {
     })
       .then(res => res.json())
       .then(data => {
-        setUsers(data);
+        let groupedData = data.map(e => {
+          e.group = 0;
+          return e;
+        });
+
+        setUsers(groupedData);
       });
   };
 
@@ -152,10 +157,9 @@ function App() {
                   <People user={users}></People>
                 </div>
               </header>
-              {/* <body><Grouping /></body> */}
             </Typography>
             <React.Fragment>
-              <Grouping></Grouping>
+              <Grouping people={users}></Grouping>
             </React.Fragment>
           </Paper>
         </main>
