@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const apiUrl = `http://localhost:3000/api`;
 
-const Add = () => {
+const Add = ({ loadUsers }) => {
   const [name, setName] = useState('');
 
   const handleChange = e => {
@@ -22,6 +22,7 @@ const Add = () => {
       .then(res => res.json())
       .then(data => {
         console.log(data);
+        loadUsers();
       });
   };
 
