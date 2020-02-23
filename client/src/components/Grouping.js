@@ -25,10 +25,9 @@ const useStyles = makeStyles({
 });
 
 export default function Grouping(props) {
-  const [number, setNumber] = useState(0);
+  const [number, setNumber] = useState('');
   const [type, setType] = useState('groups_number');
   const classes = useStyles();
-  //   const bull = <span className={classes.bullet}>•</span>;
 
   const shuffle = array => {
     var currentIndex = array.length,
@@ -52,7 +51,6 @@ export default function Grouping(props) {
 
   const makeGroups = () => {
     let groupNo = 0;
-    // console.log('makeGruops', number);
     setNumber('');
 
     shuffle(props.people);
@@ -71,19 +69,10 @@ export default function Grouping(props) {
   };
 
   const makeNumberOfGroups = () => {
-    console.log('makeNumberOfGroups', props.people, number);
     let people = props.people;
     let groupNo = number;
     let numPeopleOfGroup = Math.ceil(people.length / parseInt(groupNo));
 
-    console.log(people, groupNo, numPeopleOfGroup);
-
-    // 그룹당 사람 수 = people.length / groupNo
-    // 4 = 8 / 2
-    // 3 = 5 / 2  => 2.5 => 3
-    // 3 = 9 / 4 => 2.25 => 3
-    // 1 = 5 / 5
-    // 4 = 10 / 3 => 3.33 => 4
     let groupIdx = 0;
     let groupCnt = numPeopleOfGroup;
     people.forEach(e => {
@@ -98,22 +87,13 @@ export default function Grouping(props) {
       }
     });
 
-    console.log(people);
     return groupNo;
   };
 
   const makeMinimumMemberSize = () => {
-    console.log('makeMinimumMemberSize', props.people, number);
-
     let people = props.people;
     let groupNo = Math.floor(people.length / parseInt(number));
     let numPeopleOfGroup = number;
-
-    // 그룹수 = 총원 / 최소 인원
-    // 4 = 8 / 2
-    // 2 = 8 / 3
-    // 2 = 8 / 4
-    // 4 = 9 / 2
 
     let groupIdx = 0;
     let groupCnt = numPeopleOfGroup;
@@ -131,7 +111,6 @@ export default function Grouping(props) {
         }
       }
     });
-    console.log(people);
     return groupNo;
   };
 

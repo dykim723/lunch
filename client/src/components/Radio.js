@@ -67,7 +67,7 @@ function StyledRadio(props) {
   );
 }
 
-export default function CustomizedRadios(props) {
+export default function CustomizedRadios({ handleRadio }) {
   return (
     <FormControl component="fieldset">
       <FormLabel component="legend">Grouping</FormLabel>
@@ -80,13 +80,13 @@ export default function CustomizedRadios(props) {
           value="groups_number"
           control={<StyledRadio />}
           label="The Number of groups"
-          onChange={props.handleRadio}
+          onChange={handleRadio}
         />
         <FormControlLabel
           value="minumum_member"
           control={<StyledRadio />}
           label="Minimum member size"
-          onChange={props.handleRadio}
+          onChange={handleRadio}
         />
       </RadioGroup>
     </FormControl>

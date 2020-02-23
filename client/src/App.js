@@ -11,6 +11,7 @@ import Group from './components/Group';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grouping from './components/Grouping';
+import * as api from './utils/api';
 
 import { fetchPeople, getPeople } from './modules/lunch';
 
@@ -27,8 +28,6 @@ const mapStateToProps = state => ({
 App.propTypes = {
   people: PropTypes.array.isRequired,
 };
-
-const apiUrl = `http://localhost:3000/api`;
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -67,87 +66,47 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function App() {
+function App(props) {
   const classes = useStyles();
-  const [users, setUsers] = useState([]);
   const [groups, setGroups] = useState([]);
-  // const { people } = this.props;
+  const { people } = props;
 
   useEffect(() => {
-    loadUsers();
-  }, []);
+    props.store.dispatch(fetchPeople());
+  }, [props.store]);
 
-  const createUser = name => {
-    fetch(apiUrl + '/users/create', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: name,
-      }),
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-      });
-
-    loadUsers();
+  const handleLoadPeople = () => {
+    props.store.dispatch(fetchPeople());
   };
 
-  const loadUsers = () => {
-    fetch(apiUrl + '/users', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    })
-      .then(res => res.json())
-      .then(data => {
-        let groupedData = data.map(e => {
-          e.group = 0;
-          return e;
-        });
-
-        setUsers(groupedData);
-      });
-  };
-
-  const People = ({ user }) => {
+  const People = () => {
     return (
       <div>
-        {user.map(u => {
-          return (
-            <Person key={u._id} person={u} handleLoadUsers={loadUsers}></Person>
-          );
-        })}
+        {people &&
+          people.map(u => {
+            return (
+              <Person
+                key={u._id}
+                id={u._id}
+                name={u.name}
+                handleLoadUsers={handleLoadPeople}
+                handleRemovePerson={api.removePerson}
+              ></Person>
+            );
+          })}
       </div>
     );
   };
 
-  // const Groups = (people, groupoNo) => {
-  //   return (
-  //     {
-  //       for (let i = 0; i < groupNo; i++) {
-  //         <Group key={i} people={group}></Group>;
-  //       }
-  //     }
-  //   )
-  // };
-
   const makeGroups = groupNo => {
-    console.log('makeGroups', users, groupNo);
     let ret = [];
     let group;
 
     for (let i = 0; i < groupNo; i++) {
-      group = users.filter(e => e.group === i);
-      console.log(i, group, groups);
+      group = people.filter(e => e.group === i);
       ret.push(<Group key={i} people={group} num={i}></Group>);
-      // setGroups([...groups, <Group key={i} people={group}></Group>]);
     }
     setGroups(ret);
-
-    // console.log(group);
-
-    // setGroups([...groups, <Group people={users}></Group>]);
-    // Groups(users);
   };
 
   return (
@@ -164,14 +123,13 @@ function App() {
         <main className={classes.layout}>
           <Paper className={classes.paper}>
             <React.Fragment>
-              {/* <button onClick={() => createUser('kim')}>Create User</button>
-              {users.length} */}
+              <Add
+                createPerson={api.createPerson}
+                loadUsers={handleLoadPeople}
+              ></Add>
+              <People />
 
-              <Add loadUsers={loadUsers}></Add>
-
-              <People user={users}></People>
-
-              <Grouping people={users} handleGroups={makeGroups}></Grouping>
+              <Grouping people={people} handleGroups={makeGroups}></Grouping>
             </React.Fragment>
           </Paper>
           <Paper className={classes.paper}>
