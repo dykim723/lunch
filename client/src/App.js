@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Add from './components/Add';
@@ -11,6 +11,7 @@ import Group from './components/Group';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grouping from './components/Grouping';
+import Alert from './components/Snackbar';
 import * as api from './utils/api';
 
 import { fetchPeople, getPeople } from './modules/lunch';
@@ -109,6 +110,16 @@ function App(props) {
     setGroups(ret);
   };
 
+  const alertRef = useRef();
+
+  const handleError = name => {
+    alertRef.current.handleClick(name);
+  };
+
+  const handleGroupError = desc => {
+    alertRef.current.handleGroupError(desc);
+  };
+
   return (
     <div className="App">
       <React.Fragment>
@@ -126,10 +137,16 @@ function App(props) {
               <Add
                 createPerson={api.createPerson}
                 loadUsers={handleLoadPeople}
+                alertError={handleError}
               ></Add>
+              <Alert ref={alertRef}></Alert>
               <People />
 
-              <Grouping people={people} handleGroups={makeGroups}></Grouping>
+              <Grouping
+                people={people}
+                handleGroups={makeGroups}
+                alertError={handleGroupError}
+              ></Grouping>
             </React.Fragment>
           </Paper>
           <Paper className={classes.paper}>

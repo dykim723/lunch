@@ -14,7 +14,7 @@ export function fetchPeople(callback) {
     });
 }
 
-export function createPerson(name, callback) {
+export function createPerson(name, callback, handleError) {
   fetch(apiUrl + '/users', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -25,6 +25,11 @@ export function createPerson(name, callback) {
     .then(res => res.json())
     .then(data => {
       callback(data);
+    })
+    .catch(err => {
+      if (handleError) {
+        handleError(name);
+      }
     });
 }
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from './TextField';
 
-const Add = ({ loadUsers, createPerson }) => {
+const Add = ({ loadUsers, createPerson, alertError }) => {
   const [name, setName] = useState('');
 
   const handleChange = e => {
@@ -12,9 +12,13 @@ const Add = ({ loadUsers, createPerson }) => {
   const handleSubmit = e => {
     e.preventDefault();
     setName('');
-    createPerson(name, () => {
-      loadUsers();
-    });
+    createPerson(
+      name,
+      () => {
+        loadUsers();
+      },
+      alertError,
+    );
   };
 
   return (

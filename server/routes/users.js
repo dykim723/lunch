@@ -23,11 +23,11 @@ router.post('/', async (req, res) => {
       user = new User(query);
       user.save().then(() => console.log('User created'));
       output = `Created ${name}`;
+      res.status(200).json({ output });
     } else {
-      output = `${name} existed`;
+      output = `${name}`;
+      res.status(204).json(output);
     }
-
-    res.status(200).json({ output });
   });
 });
 

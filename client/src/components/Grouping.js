@@ -34,13 +34,10 @@ export default function Grouping(props) {
       temporaryValue,
       randomIndex;
 
-    // While there remain elements to shuffle...
     while (0 !== currentIndex) {
-      // Pick a remaining element...
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex -= 1;
 
-      // And swap it with the current element.
       temporaryValue = array[currentIndex];
       array[currentIndex] = array[randomIndex];
       array[randomIndex] = temporaryValue;
@@ -61,7 +58,13 @@ export default function Grouping(props) {
       groupNo = makeMinimumMemberSize();
     }
 
-    props.handleGroups(groupNo);
+    if (groupNo > props.people.length) {
+      props.alertError(
+        'You cannot create more groups than the number of people.',
+      );
+    } else {
+      props.handleGroups(groupNo);
+    }
   };
 
   const changeGroupNumber = e => {
@@ -71,19 +74,19 @@ export default function Grouping(props) {
   const makeNumberOfGroups = () => {
     let people = props.people;
     let groupNo = number;
-    let numPeopleOfGroup = Math.ceil(people.length / parseInt(groupNo));
 
     let groupIdx = 0;
-    let groupCnt = numPeopleOfGroup;
-    people.forEach(e => {
-      if (groupCnt > 0) {
-        e.group = groupIdx;
-        groupCnt--;
 
-        if (groupCnt === 0) {
-          groupIdx++;
-          groupCnt = numPeopleOfGroup;
-        }
+    people.forEach(e => {
+      if (parseInt(groupNo) === 1) {
+        groupIdx = 0;
+      }
+      e.group = groupIdx;
+
+      if (groupIdx === parseInt(groupNo) - 1) {
+        groupIdx = 0;
+      } else {
+        groupIdx++;
       }
     });
 
