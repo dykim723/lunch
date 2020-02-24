@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
-import Snackbar from '@material-ui/core/Snackbar';
+
 import MuiAlert from '@material-ui/lab/Alert';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, Snackbar } from '@material-ui/core';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -24,7 +24,7 @@ const CustomSnackbar = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     handleClick(name) {
       //   setName(name);
-      setDesc(`${name} is existed!`);
+      setDesc(`${name} already exists!`);
       setOpen(true);
     },
 
@@ -44,7 +44,7 @@ const CustomSnackbar = forwardRef((props, ref) => {
 
   return (
     <div className={classes.root}>
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
           {desc}
         </Alert>

@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import TextField from './TextField';
+
+import {
+  makeStyles,
+  Button,
+  Box,
+  Card,
+  CardContent,
+  CardActions,
+  TextField,
+} from '@material-ui/core/';
+
+// import TextField from './TextField';
 import Radio from './Radio';
 
 const useStyles = makeStyles({
@@ -27,7 +33,18 @@ const useStyles = makeStyles({
 export default function Grouping(props) {
   const [number, setNumber] = useState('');
   const [type, setType] = useState('groups_number');
+  const [fieldError, setFieldError] = useState(false);
   const classes = useStyles();
+
+  const validation = {
+    isNotEmpty: function(str) {
+      return parseInt(str) !== ''; // returns a boolean
+    },
+    isNotNumber: function(str) {
+      const pattern = /^(\(?\+?[0-9]*\)?)?[0-9_\- ()]*$/;
+      return !pattern.test(str); // returns a boolean
+    },
+  };
 
   const shuffle = array => {
     var currentIndex = array.length,
@@ -46,29 +63,53 @@ export default function Grouping(props) {
     return array;
   };
 
-  const makeGroups = () => {
+  const makeGroups = e => {
     let groupNo = 0;
+    let error = false;
+
+    if (number !== '' && validation.isNotEmpty(number)) {
+      setFieldError(false);
+
+      if (!fieldError) {
+        shuffle(props.people);
+
+        if (type === 'groups_number') {
+          groupNo = makeNumberOfGroups();
+
+          if (groupNo > props.people.length) {
+            error = true;
+            props.alertError(
+              'Cannot create more groups than the number of people.',
+            );
+          }
+        } else {
+          groupNo = makeMinimumMemberSize();
+
+          if (number > props.people.length) {
+            error = true;
+            props.alertError('Minumum member size error');
+          }
+        }
+
+        if (!error) {
+          props.handleGroups(groupNo);
+        }
+      }
+    } else {
+      setFieldError(true);
+    }
+
     setNumber('');
-
-    shuffle(props.people);
-
-    if (type === 'groups_number') {
-      groupNo = makeNumberOfGroups();
-    } else {
-      groupNo = makeMinimumMemberSize();
-    }
-
-    if (groupNo > props.people.length) {
-      props.alertError(
-        'You cannot create more groups than the number of people.',
-      );
-    } else {
-      props.handleGroups(groupNo);
-    }
   };
 
   const changeGroupNumber = e => {
-    setNumber(e.target.value);
+    if (validation.isNotNumber(e.target.value)) {
+      setNumber('');
+      setFieldError(true);
+    } else {
+      setNumber(e.target.value);
+      setFieldError(false);
+    }
   };
 
   const makeNumberOfGroups = () => {
@@ -124,16 +165,21 @@ export default function Grouping(props) {
   return (
     <Card className={classes.root}>
       <CardContent>
-        <Radio handleRadio={getGroupingType}></Radio>
-        <TextField value={number} handleChange={changeGroupNumber}></TextField>
+        <Box>
+          <Radio handleRadio={getGroupingType}></Radio>
+          {/* <TextField value={number} onChange={changeGroupNumber}></TextField> */}
+          <TextField
+            error={fieldError}
+            id="standard-error-helper-text"
+            value={number}
+            onChange={changeGroupNumber}
+            label={fieldError ? 'Error' : 'Number'}
+            helperText={fieldError ? 'Please enter a valid number' : ''}
+          ></TextField>
+        </Box>
       </CardContent>
       <CardActions>
-        <Button
-          variant="outlined"
-          color="primary"
-          href="#outlined-buttons"
-          onClick={makeGroups}
-        >
+        <Button variant="outlined" color="primary" onClick={makeGroups}>
           Make Groups
         </Button>
       </CardActions>

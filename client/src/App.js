@@ -1,15 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+
+import {
+  makeStyles,
+  CssBaseline,
+  Box,
+  AppBar,
+  Toolbar,
+  Paper,
+  Typography,
+} from '@material-ui/core';
+
 import Add from './components/Add';
-import { makeStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import Person from './components/Person';
 import Group from './components/Group';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import Grouping from './components/Grouping';
 import Alert from './components/Snackbar';
 import * as api from './utils/api';
@@ -65,6 +70,9 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(3),
     marginLeft: theme.spacing(1),
   },
+  group_members: {
+    padding: theme.spacing(2),
+  },
 }));
 
 function App(props) {
@@ -105,7 +113,12 @@ function App(props) {
 
     for (let i = 0; i < groupNo; i++) {
       group = people.filter(e => e.group === i);
-      ret.push(<Group key={i} people={group} num={i}></Group>);
+      ret.push(
+        <Box key={i} m={1}>
+          {' '}
+          <Group key={i} people={group} num={i}></Group>
+        </Box>,
+      );
     }
     setGroups(ret);
   };
@@ -131,28 +144,38 @@ function App(props) {
             </Typography>
           </Toolbar>
         </AppBar>
-        <main className={classes.layout}>
+        <Box className={classes.layout}>
           <Paper className={classes.paper}>
             <React.Fragment>
-              <Add
-                createPerson={api.createPerson}
-                loadUsers={handleLoadPeople}
-                alertError={handleError}
-              ></Add>
-              <Alert ref={alertRef}></Alert>
-              <People />
-
-              <Grouping
-                people={people}
-                handleGroups={makeGroups}
-                alertError={handleGroupError}
-              ></Grouping>
+              <Box m={2}>
+                <Add
+                  createPerson={api.createPerson}
+                  loadUsers={handleLoadPeople}
+                  alertError={handleError}
+                ></Add>
+                <Alert ref={alertRef}></Alert>
+              </Box>
+              <Box m={1}>
+                <Typography variant="h6" color="inherit" noWrap>
+                  {`Total: ${people.length}`}
+                </Typography>
+              </Box>
+              <Box>
+                <People />
+              </Box>
+              <Box m={2}>
+                <Grouping
+                  people={people}
+                  handleGroups={makeGroups}
+                  alertError={handleGroupError}
+                ></Grouping>
+              </Box>
             </React.Fragment>
           </Paper>
           <Paper className={classes.paper}>
             <React.Fragment>{groups}</React.Fragment>
           </Paper>
-        </main>
+        </Box>
       </React.Fragment>
     </div>
   );

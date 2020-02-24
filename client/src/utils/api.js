@@ -1,6 +1,6 @@
 const apiUrl = `http://localhost:3000/api`;
 export function fetchPeople(callback) {
-  fetch(apiUrl + '/users', {
+  fetch(apiUrl + '/people', {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   })
@@ -15,7 +15,7 @@ export function fetchPeople(callback) {
 }
 
 export function createPerson(name, callback, handleError) {
-  fetch(apiUrl + '/users', {
+  fetch(apiUrl + '/people', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -34,7 +34,7 @@ export function createPerson(name, callback, handleError) {
 }
 
 export function removePerson(id, callback) {
-  fetch(apiUrl + '/users/' + id, {
+  fetch(apiUrl + '/people/' + id, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
   })
