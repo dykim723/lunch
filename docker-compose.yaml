@@ -1,39 +1,39 @@
-version: "3"
+version: '3'
 services:
-  client:                 
+  client:
     build:
-      dockerfile: Dockerfile.dev
-      context: ./client    
+      dockerfile: Dockerfile
+      context: ./client
     volumes:
-      - ./client/:/app      
-      - /app/node_modules  
+      - ./client/:/app
+      - /app/node_modules
     networks:
-      - backend           
-  server:                          
+      - backend
+  server:
     build:
-      dockerfile: Dockerfile.dev
-      context: ./server    
+      dockerfile: Dockerfile
+      context: ./server
     volumes:
-      - ./server/:/app      
-      - /app/node_modules      
+      - ./server/:/app
+      - /app/node_modules
     environment:
       - NODE_PATH=src
       - PORT=3050
       - DB_HOST=mongo
-      - DB=lunch  
+      - DB=lunch
     networks:
-      - backend  
+      - backend
     depends_on:
-      - mongo      
+      - mongo
     ports:
-      - "5000:3050"  
+      - '5000:3050'
   mongo:
     container_name: mongo
     image: mongo
     volumes:
       - data:/data/db
     ports:
-      - "27017:27017" 
+      - '27017:27017'
     networks:
       - backend
 
@@ -41,17 +41,16 @@ services:
     restart: always
     build:
       dockerfile: Dockerfile.dev
-      context: ./nginx 
+      context: ./nginx
     ports:
-      - '3000:80' 
+      - '3000:80'
     networks:
       - backend
-    
 
-networks: 
+networks:
   backend:
     driver: bridge
 
 volumes:
   data:
-    driver: local  
+    driver: local
